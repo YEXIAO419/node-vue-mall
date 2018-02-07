@@ -83,6 +83,9 @@ img {
     border: 0;
 }
 
+img[lazy=loading] {
+  width: 80px;
+}
 caption,
 th {
     text-align: left;

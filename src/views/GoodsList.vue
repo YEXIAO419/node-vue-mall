@@ -28,7 +28,7 @@
               <ul>
                 <li v-for="item in goodsList">
                   <div class="pic">
-                    <a href="#"><img :src="'/static/' + item.productImage" alt=""></a>
+                    <a href="#"><img v-lazy="'/static/' + item.productImage" alt="" lazy="loading" width="100%" height="100%"></a>
                   </div>
                   <div class="main">
                     <div class="name">{{item.productName}}</div>
