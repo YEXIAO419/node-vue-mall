@@ -1,0 +1,9 @@
+跨域处理
+1 在config/proxyTable下面转发。
+ proxyTable: {
+      '/goods': {
+        target: 'http://localhost:3000/'
+      }
+    }
+
+2

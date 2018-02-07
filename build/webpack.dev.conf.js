@@ -11,7 +11,6 @@ const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const portfinder = require('portfinder')
 const express = require('express');
 const router = express.Router();
-const goodsDate = require("./../mock/goods.json");
 
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
@@ -46,7 +45,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     watchOptions: {
       poll: config.dev.poll,
     },
-    before(app){
+  /*  before(app){
       router.get("/hello", function(req, res, next){
         res.end("Hello old song")
       })
@@ -55,7 +54,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         res.json(goodsDate);
       })
       app.use(router)
-    }
+    }*/
   },
   plugins: [
     new webpack.DefinePlugin({
