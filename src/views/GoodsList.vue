@@ -6,8 +6,8 @@
       <div class="container">
         <div class="filter-nav">
           <span class="sortby">排序:</span>
-          <a href="javascript:void(0)" class="default cur">默认</a>
-          <a href="javascript:void(0)" class="price">价格 <svg class="icon icon-arrow-short"><use xlink:href="#icon-arrow-short"></use></svg></a>
+          <a href="javascript:void(0)" class="default cur" @click="defaultSortGoods">默认</a>
+          <a href="javascript:void(0)" class="price" :class="{'shor-up': sortFlag}" @click="sortGoods">价格 <svg class="icon icon-arrow-short"><use xlink:href="#icon-arrow-short"></use></svg></a>
           <a href="javascript:void(0)" class="filterby" @click.stop="showFilterPop">筛选</a><!--stop阻止冒泡-->
         </div>
         <div class="accessory-result">
@@ -40,6 +40,13 @@
                 </li>
               </ul>
             </div>
+            <!--滚动分页-->
+            <div class="view-more-normal"
+                 v-infinite-scroll="loadMore"
+                 infinite-scroll-disabled="busy"
+                 infinite-scroll-distance="20">
+              <img src="./../../static/loading-svg/loading-spinning-bubbles.svg" v-show="loading">
+            </div>
           </div>
         </div>
       </div>
@@ -60,9 +67,11 @@
     data () {
       return {
         goodsList: [],
-        sortFlag: 1,
+        sortFlag: true,
         page: 1,
         pageSize: 8,
+        busy: true,
+        loading: false,
         priceFilter: [{
           startPrice:'0.00',
           endPrice:'100.00'
@@ -98,17 +107,44 @@
       NavBreader
     },
     methods: {
-      getGoodsList(){
+      getGoodsList(flag){
+        this.loading = true;
         var param = {
           page: this.page,
           pageSize: this.pageSize,
-          sort: this.sortFlag
+          sort: this.sortFlag ? 1 : -1
         };
         axios.get("http://localhost:3000/goods", {
           params: param
         }).then((result) => {
-          this.goodsList = result.data.result.list
+          var res = result.data;
+          this.loading = false;
+          if(res.status == '0'){
+            if(flag){ //判断是否滚动拉数据，是，则数据相加
+              this.goodsList = this.goodsList.concat(res.result.list);
+              if(res.result.count == 0){ //判断是否还有数据，否则true不会发起ajax请求
+                this.busy = true;
+              }else{
+                this.busy = false;
+              }
+            }else{
+              this.goodsList = res.result.list;
+              this.busy = false; //busy为false则可继续拉数据
+            }
+          }else{
+            this.goodsList = [];
+          }
         })
+      },
+      sortGoods(){
+        this.sortFlag = !this.sortFlag;
+        this.page = 1;
+        this.getGoodsList();
+      },
+      defaultSortGoods(){
+        this.sortFlag = true;
+        this.page = 1;
+        this.getGoodsList();
       },
       setPriceFilter(index){
         this.priceChecked = index;
@@ -120,6 +156,13 @@
       closePop(){
         this.filterBy = false;
         this.overLayFlag = false;
+      },
+      loadMore(){
+        this.busy = true;
+        setTimeout(() => {
+          this.page++;
+          this.getGoodsList(true);
+        }, 500)
       }
     },
   mounted(){

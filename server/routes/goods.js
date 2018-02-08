@@ -28,7 +28,6 @@ router.get('/', function(req, res, next) {
   let goodsModel = Goods.find(params).skip(skip).limit(pageSize);
   goodsModel.sort({'salePrice': sort});
   goodsModel.exec(function(err, doc){
-    console.log(doc);
       if(err){
         res.json({
           status: '1',
