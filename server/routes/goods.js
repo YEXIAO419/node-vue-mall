@@ -20,23 +20,31 @@ mongoose.connection.on('disconnected', function(){
 
 /* 查询商品列表数据 */
 router.get('/', function(req, res, next) {
-  Goods.find(function(err, doc){
-    if(err){
-      res.json({
-        status: '1',
-        msg: err.message
-      })
-    }else {
-      res.json({
-        status: '0',
-        msg: '',
-        result: {
-          count: doc.length,
-          list: doc
-        }
-      })
-    }
-  });
+  let page = parseInt(req.param('page')) || 0;
+  let pageSize = parseInt(req.param('pageSize')) || 0;
+  let sort = req.param('sort') || 1;
+  let skip = (page-1)*pageSize || 0;
+  let params = {};
+  let goodsModel = Goods.find(params).skip(skip).limit(pageSize);
+  goodsModel.sort({'salePrice': sort});
+  goodsModel.exec(function(err, doc){
+    console.log(doc);
+      if(err){
+        res.json({
+          status: '1',
+          msg: err.message
+        })
+      }else {
+        res.json({
+          status: '0',
+          msg: '',
+          result: {
+            count: doc.length,
+            list: doc
+          }
+        })
+      }
+  })
 });
 
 module.exports = router;
