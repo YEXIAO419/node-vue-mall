@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 var Goods=require('./../models/goods.js');
+var User=require('./../models/user.js');
 
 //链接mongodb数据库
 mongoose.connect('mongodb://127.0.0.1:27017/vue_shop_lesson');
@@ -52,5 +53,65 @@ router.get('/', function(req, res, next) {
       }
   })
 });
+
+/* 加入购物车 */
+router.post("/addCart", function(req, res, next){
+  var userId = '100000077';
+  var productId = req.body.productId;
+  var cartSave = function(userDoc){
+    console.log(userDoc.cartList)
+    userDoc.save(function (err, doc2) {
+      if (err) {
+        res.json({
+          status: '1',
+          msg: err.message
+        })
+      } else {
+        res.json({
+          status: '0',
+          msg: '',
+          result: 'suc'
+        })
+      }
+    })
+  }
+
+  User.findOne({userId: userId}, function(err, userDoc){
+    if(err){
+      res.json({
+        status: '1',
+        msg: err.message
+      })
+    }else {
+      if (userDoc) {
+        var goodFlag = false; //判断商品是否已存在购物车
+        userDoc.cartList.forEach(function (item) {
+          //如果购物车已存在商品则加一
+          if (item.productId == productId) {
+            goodFlag = true;
+            item.productNum++;
+          }
+        });
+        //如果不存在则新增商品
+        if (goodFlag == false) {
+           Goods.findOne({productId: productId}, function (err, doc) {
+             if (err) {
+               res.json({
+                 status: '1',
+                 msg: err.message
+               })
+             } else {
+               doc.productNum = 1;
+               doc.checked = 1;
+               userDoc.cartList.push(doc);
+             }
+           })
+         }else{
+          cartSave(userDoc);
+        }
+      }
+    }
+  })
+})
 
 module.exports = router;
