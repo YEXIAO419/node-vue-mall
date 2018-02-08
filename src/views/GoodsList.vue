@@ -96,6 +96,8 @@
             startPrice:'3000.00',
             endPrice:'6000.00'
           }],
+        startPrice: '',
+        endPrice: '',
         priceChecked: 'all',
         filterBy: false,
         overLayFlag: false　
@@ -112,7 +114,9 @@
         var param = {
           page: this.page,
           pageSize: this.pageSize,
-          sort: this.sortFlag ? 1 : -1
+          sort: this.sortFlag ? 1 : -1,
+          startPrice: this.startPrice,
+          endPrice: this.endPrice,
         };
         axios.get("http://localhost:3000/goods", {
           params: param
@@ -148,6 +152,12 @@
       },
       setPriceFilter(index){
         this.priceChecked = index;
+        if(index != 'all'){
+          this.startPrice = (this.priceFilter)[index].startPrice;
+          this.endPrice = (this.priceFilter)[index].endPrice;
+        }
+        this.page = 1;
+        this.getGoodsList();
       },
       showFilterPop(){
         this.filterBy = true;

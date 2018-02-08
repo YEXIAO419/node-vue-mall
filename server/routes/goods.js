@@ -25,6 +25,13 @@ router.get('/', function(req, res, next) {
   let sort = req.param('sort') || 1;
   let skip = (page-1)*pageSize || 0;
   let params = {};
+  let startPrice = req.param("startPrice") || '';
+  let endPrice = req.param("endPrice") || '';
+
+  if(startPrice != '' && endPrice != ''){
+    params = {"salePrice": {$gte: startPrice, $lte: endPrice}};
+  }
+
   let goodsModel = Goods.find(params).skip(skip).limit(pageSize);
   goodsModel.sort({'salePrice': sort});
   goodsModel.exec(function(err, doc){
