@@ -118,7 +118,7 @@
           startPrice: this.startPrice,
           endPrice: this.endPrice,
         };
-        axios.get("http://localhost:3000/goods", {
+        axios.get("/goods", {
           params: param
         }).then((result) => {
           var res = result.data;

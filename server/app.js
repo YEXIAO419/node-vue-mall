@@ -25,14 +25,21 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.all('*',function(req, res, next){
-  //cors配置
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS');
-  res.header('X-Powered-By', '3.2.1');
-  res.header('Content-Type', 'application/json;charset=utf-8');
-  next();
+/*-------登陆拦截----------*/
+app.use(function(req, res, next){
+  if(req.cookies.userId){
+    next();
+  }else{
+    if(req.originalUrl == '/users/login' || req.originalUrl == '/users/logout' || req.originalUrl.indexOf('/goods') > -1){
+      next();
+    }else{
+      res.json({
+        status:'10001',
+        msg:'当前未登录',
+        result:''
+      });
+    }
+  }
 })
 
 app.use('/', index);
