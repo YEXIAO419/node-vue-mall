@@ -21,6 +21,14 @@ var userSchema = new Schema({
     "postCode": Number,
     "tel": Number,
     "isDefault": Boolean
+  }],
+  "orderList": [{
+    orderId: String,
+    orderTotal: Number,
+    addressInfo:String,
+    goodsList: Array,
+    orderStatus: String,
+    createDate:Date
   }]
 });
 
