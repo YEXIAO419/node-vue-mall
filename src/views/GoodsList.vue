@@ -35,7 +35,7 @@
                   </div>
                   <div class="main">
                     <div class="name">{{item.productName}}</div>
-                    <div class="price">{{item.salePrice}}</div>
+                    <div class="price">{{item.salePrice | currency}}</div>
                     <div class="btn-area">
                       <a href="javascript:;" class="btn btn--m" @click="addCart(item.productId)">加入购物车</a>
                     </div>
@@ -90,6 +90,7 @@
   import NavFooter from '@/components/NavFooter'
   import NavBreader from '@/components/NavBreader'
   import Modal from '@/components/Modal'
+  import {currency} from './../util/currency'
   import axios from 'axios'
   import './../assets/css/goods-list.css'
   export default {
@@ -135,6 +136,9 @@
         overLayFlag: false　
       }
     },
+  filters: {
+    currency: currency
+  },
     components: {
       NavHeader,
       NavFooter,
