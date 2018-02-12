@@ -125,7 +125,7 @@
                 总价: <span class="total-price">{{totalPrice | currency}}</span>
               </div>
               <div class="btn-wrap">
-                <a class="btn btn--red">去结算</a>
+                <a class="btn btn--red" href="/#/address">去结算</a>
               </div>
             </div>
           </div>
@@ -216,7 +216,6 @@
           if(item.checked == '1'){
             i++;
           }
-          console.log(i);
         })
         return i;
       }
