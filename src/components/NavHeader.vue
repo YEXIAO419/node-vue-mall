@@ -24,7 +24,7 @@
   <div class="navbar">
     <div class="navbar-left-container">
       <a href="/">
-        <img class="navbar-brand-logo" src="/static/logo.png">
+        购物商城
       </a>
     </div>
     <div class="navbar-right-container">
@@ -97,6 +97,9 @@
               nickName: ''
             }
         },
+        mounted(){
+          this.checkLogin();
+        },
         methods: {
           login(){
             if(!this.userName || !this.userPwd){
@@ -122,6 +125,17 @@
               let res = response.data;
               if(res.status == '0'){
                 this.nickName = '';
+              }
+            })
+          },
+          checkLogin(){
+            axios.get('/users/checkLogin').then((response) => {
+              var res = response.data;
+              if(res.status == '0'){
+                this.nickName = res.result;
+                this.loginModalFlag = false
+              }else{
+                this.$router.push({path:'/'})
               }
             })
           }

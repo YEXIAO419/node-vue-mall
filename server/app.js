@@ -30,7 +30,7 @@ app.use(function(req, res, next){
   if(req.cookies.userId){
     next();
   }else{
-    if(req.originalUrl == '/users/login' || req.originalUrl == '/users/logout' || req.originalUrl.indexOf('/goods') > -1){
+    if(req.originalUrl == '/users/login' || req.originalUrl == '/users/logout' || req.originalUrl.indexOf('/goods/list') > -1){ //白名单接口
       next();
     }else{
       res.json({

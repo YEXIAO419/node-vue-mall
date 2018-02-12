@@ -11,7 +11,8 @@ var userSchema = new Schema({
     "productName": String,
     "salePrice": String,
     "checked": String,
-    "productNum": String
+    "productNum": String,
+    "productImage": String
   }],
   "addressList": [{
     "addressId": String,

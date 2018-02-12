@@ -1,7 +1,9 @@
 <template>
   <div class="goodslist">
     <nav-header></nav-header>
-    <nav-breader></nav-breader>
+    <nav-breader>
+      <span>商品列表</span>
+    </nav-breader>
     <div class="accessory-result-page">
       <div class="container">
         <div class="filter-nav">
@@ -10,6 +12,7 @@
           <a href="javascript:void(0)" class="price" :class="{'shor-up': sortFlag}" @click="sortGoods">价格 <svg class="icon icon-arrow-short"><use xlink:href="#icon-arrow-short"></use></svg></a>
           <a href="javascript:void(0)" class="filterby" @click.stop="showFilterPop">筛选</a><!--stop阻止冒泡-->
         </div>
+
         <div class="accessory-result">
           <!-- filter -->
           <div class="filter" id="filter" :class="{'filterby-show': filterBy}">
@@ -22,7 +25,7 @@
             </dl>
           </div>
 
-          <!-- search result accessories list -->
+          <!-- 商品列表 -->
           <div class="accessory-list-wrap">
             <div class="accessory-list col-4">
               <ul>
@@ -40,6 +43,7 @@
                 </li>
               </ul>
             </div>
+
             <!--滚动分页-->
             <div class="view-more-normal"
                  v-infinite-scroll="loadMore"
@@ -52,6 +56,31 @@
       </div>
     </div>
     <div class="md-overlay" v-show="overLayFlag" @click.stop="closePop"></div>
+
+    <!--要求登录提示框-->
+    <modal :mdShow="mdShow" v-on:close="closeModal">
+      <p slot="message">
+        请先登陆，否则无法加入购物车中！
+      </p>
+      <div slot="btnGroup">
+        <a class="btn btn--m" href="javascript:void(0)" @click="mdShow=false">关闭</a>
+      </div>
+    </modal>
+
+    <!--加入购物车成功-->
+    <modal v-bind:mdShow="mdShowCart" v-on:close="closeModal">
+      <p slot="message">
+        <svg class="icon-status-ok">
+          <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-status-ok"></use>
+        </svg>
+        <span>加入购物车成!</span>
+      </p>
+      <div slot="btnGroup">
+        <a class="btn btn--m" href="javascript:void(0);" @click="mdShowCart = false">继续购物</a>
+        <router-link class="btn btn--m btn--red" href="javascript:;" to="/cart">查看购物车</router-link>
+      </div>
+    </modal>
+
     <nav-footer></nav-footer>
   </div>
 </template>
@@ -60,6 +89,7 @@
   import NavHeader from '@/components/NavHeader'
   import NavFooter from '@/components/NavFooter'
   import NavBreader from '@/components/NavBreader'
+  import Modal from '@/components/Modal'
   import axios from 'axios'
   import './../assets/css/goods-list.css'
   export default {
@@ -72,6 +102,8 @@
         pageSize: 8,
         busy: true,
         loading: false,
+        mdShow: false,
+        mdShowCart: false,
         priceFilter: [{
           startPrice:'0.00',
           endPrice:'100.00'
@@ -106,7 +138,8 @@
     components: {
       NavHeader,
       NavFooter,
-      NavBreader
+      NavBreader,
+      Modal
     },
     methods: {
       getGoodsList(flag){
@@ -118,7 +151,7 @@
           startPrice: this.startPrice,
           endPrice: this.endPrice,
         };
-        axios.get("/goods", {
+        axios.get("/goods/list", {
           params: param
         }).then((result) => {
           var res = result.data;
@@ -183,13 +216,17 @@
         }).then((res) => {
           var res = res.data;
           if(res.status == 0){
-            console.log(res);
+            this.mdShowCart = true;
           }else{
-            alert('Error msg：' + res.msg);
+            this.mdShow = true;
           }
         })
-      }
       },
+      closeModal(){
+        this.mdShow = false;
+        this.mdShowCart = false;
+      }
+    },
   mounted(){
     this.getGoodsList();
   }

@@ -20,7 +20,7 @@ mongoose.connection.on('disconnected', function(){
 })
 
 /* 查询商品列表数据 */
-router.get('/', function(req, res, next) {
+router.get('/list', function(req, res, next) {
   let page = parseInt(req.param('page')) || 0;
   let pageSize = parseInt(req.param('pageSize')) || 0;
   let sort = req.param('sort') || 1;
@@ -59,7 +59,6 @@ router.post("/addCart", function(req, res, next){
   var userId = '100000077';
   var productId = req.body.productId;
   var cartSave = function(userDoc){
-    console.log(userDoc.cartList)
     userDoc.save(function (err, doc2) {
       if (err) {
         res.json({
@@ -104,6 +103,8 @@ router.post("/addCart", function(req, res, next){
                doc.productNum = 1;
                doc.checked = 1;
                userDoc.cartList.push(doc);
+               console.log(doc);
+               cartSave(userDoc);
              }
            })
          }else{
