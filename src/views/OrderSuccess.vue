@@ -43,10 +43,10 @@
 <script>
     import NavHeader from './../components/NavHeader'
     import NavFooter from './../components/NavFooter'
-    import NavBread from './../components/NavBread'
     import {currency} from './../util/currency'
     import axios from 'axios'
     export default{
+        name: 'OrderSuccess',
         data(){
             return{
                 orderId:'',
@@ -55,8 +55,7 @@
         },
         components:{
             NavHeader,
-            NavFooter,
-            NavBread
+            NavFooter
         },
         filters:{
             currency:currency

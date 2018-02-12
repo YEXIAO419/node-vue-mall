@@ -301,7 +301,7 @@ router.post("/payMent", function (req,res,next) {
                 }
             })
             //获取用户购物车的购买商品
-            doc.cartList.filter((item)=>{
+            doc.cartList.forEach((item)=>{
                 if(item.checked=='1'){
                     goodsList.push(item);
                 }
@@ -362,7 +362,9 @@ router.get("/orderDetail", function (req,res,next) {
             var orderList = userInfo.orderList;
             if(orderList.length>0){
                 var orderTotal = 0;
+                var i = 0;
                 orderList.forEach((item)=>{
+                    console.log(i++);
                     if(item.orderId == orderId){
                         orderTotal = item.orderTotal;
                     }
