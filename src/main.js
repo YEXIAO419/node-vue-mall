@@ -29,8 +29,11 @@ const  store = new Vuex.Store({
 
     //更新购物车数量
     updateCartCount(state, cartCount){
-      console.log(cartCount);
-      state.cartCount += cartCount;
+      if(cartCount == state.cartCount){ //相等时，则初始化获取购物车数量
+        state.cartCount = cartCount;
+      }else{
+        state.cartCount += cartCount;
+      }
     }
   }
 })
