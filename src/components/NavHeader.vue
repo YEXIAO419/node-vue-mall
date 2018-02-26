@@ -130,7 +130,8 @@
             axios.post('/users/logout').then((response) => {
               let res = response.data;
               if (res.status == '0') {
-                this.nickName = '';
+                this.$store.commit('updateUserInfo', res.result);
+                this.$store.commit("updateCartCount", 0);
               }
             })
           },
