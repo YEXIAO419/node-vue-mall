@@ -5,17 +5,40 @@ import App from './App'
 import router from './router'
 import VueLazyload from 'vue-lazyload'
 import infiniteScroll from 'vue-infinite-scroll'
+import  Vuex from  'vuex'
+import axios from 'axios';
 
 Vue.use(VueLazyload, {
   loading: 'static/loading-svg/loading-bars.svg'
 })
 Vue.use(infiniteScroll);
+Vue.use(Vuex);
 
 Vue.config.productionTip = false
+
+const  store = new Vuex.Store({
+  state: {
+    nickName: '',
+    cartCount: 0
+  },
+  mutations: {
+    //更新用户信息
+    updateUserInfo(state, nickName) {
+      state.nickName = nickName;
+    },
+
+    //更新购物车数量
+    updateCartCount(state, cartCount){
+      console.log(cartCount);
+      state.cartCount += cartCount;
+    }
+  }
+})
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  store,
   router,
   components: { App },
   template: '<App/>'

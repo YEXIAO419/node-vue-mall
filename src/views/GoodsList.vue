@@ -93,6 +93,7 @@
   import {currency} from './../util/currency'
   import axios from 'axios'
   import './../assets/css/goods-list.css'
+  import { mapState } from 'vuex'
   export default {
     name: 'GoodsList',
     data () {
@@ -136,6 +137,9 @@
         overLayFlag: false　
       }
     },
+  computed: {
+    ...mapState(['nickName','cartCount'])
+  },
   filters: {
     currency: currency
   },
@@ -219,6 +223,7 @@
           productId: productId
         }).then((res) => {
           var res = res.data;
+          this.$store.commit("updateCartCount", 1);
           if(res.status == 0){
             this.mdShowCart = true;
           }else{

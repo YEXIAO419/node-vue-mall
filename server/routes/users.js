@@ -396,4 +396,30 @@ router.get("/orderDetail", function (req,res,next) {
     })
 });
 
+//获取商品数量
+router.get('/getCartCount', function (req, res, next) {
+  if(req.cookies && req.cookies.userId){
+    var userId = req.cookies.userId;
+    User.findOne({'userId': userId}, function(err, doc){
+      if(err){
+        res.json({
+          status: '1',
+          msg: err.message
+        })
+      }else{
+        let cartList = doc.cartList;
+        let carCount = 0;
+        cartList.forEach(item => {
+          carCount += parseFloat(item.productNum);
+        })
+        res.json({
+          status: '0',
+          msg: '',
+          result: carCount
+        })
+      }
+    })
+  }
+})
+
 module.exports = router;

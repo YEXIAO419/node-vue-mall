@@ -34,7 +34,7 @@
         <a href="javascript:void(0)" class="navbar-link" v-if="nickName" @click="logout">登出</a>
 
         <div class="navbar-cart-container">
-          <span class="navbar-cart-count"></span>
+          <span class="navbar-cart-count" v-text="cartCount" v-if="cartCount"></span>
           <a class="navbar-link" href="/#/cart">
             <svg class="navbar-cart-logo">
               <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-cart"></use>
@@ -85,6 +85,7 @@
   import './../assets/css/base.css'
   import './../assets/css/login.css'
   import axios from 'axios';
+  import { mapState } from 'vuex'
 
     export default {
         name: 'NavHeader',
@@ -94,48 +95,68 @@
               userPwd: '123456',
               errorTip: false,
               loginModalFlag: false,
-              nickName: ''
             }
         },
+      computed: {
+        ...mapState(['nickName','cartCount'])
+      },
         mounted(){
           this.checkLogin();
+          this.getCartCount();
         },
         methods: {
-          login(){
-            if(!this.userName || !this.userPwd){
+          login() {
+            if (!this.userName || !this.userPwd) {
               this.errorTip = true;
               return;
-            };
+            }
+            ;
             axios.post('/users/login', {
               userName: this.userName,
               userPwd: this.userPwd
             }).then((response) => {
               let res = response.data;
-              if(res.status == '0'){
+              if (res.status == '0') {
                 this.errorTip = false;
                 this.loginModalFlag = false;
-                this.nickName = res.result.userName;
-              }else{
+                this.$store.commit("updateUserInfo", res.result.userName);
+                this.getCartCount();
+              } else {
                 this.errorTip = true;
               }
             });
           },
-          logout(){
+          logout() {
             axios.post('/users/logout').then((response) => {
               let res = response.data;
-              if(res.status == '0'){
+              if (res.status == '0') {
                 this.nickName = '';
               }
             })
           },
-          checkLogin(){
+          checkLogin() {
             axios.get('/users/checkLogin').then((response) => {
               var res = response.data;
-              if(res.status == '0'){
-                this.nickName = res.result;
+              if (res.status == '0') {
+                this.$store.commit('updateUserInfo', res.result);
                 this.loginModalFlag = false
-              }else{
-                this.$router.push({path:'/'})
+              } else {
+                this.$router.push({path: '/'})
+              }
+            })
+          },
+          getCartCount() {
+            axios.get("users/getCartCount").then(res => {
+              var res = res.data;
+              this.$store.commit("updateCartCount", res.result);
+            });
+          },
+          logOut() {
+            axios.post("/users/logout").then((response) => {
+              let res = response.data;
+              if (res.status == "0") {
+//                        this.nickName = '';
+                this.$store.commit("updateUserInfo", res.result.userName);
               }
             })
           }
